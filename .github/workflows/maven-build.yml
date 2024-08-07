@@ -82,10 +82,10 @@ jobs:
       #       exit 1
       #     fi  
           
-      - name: Install & Running TruffleHog
-        run: |
-          pip install truffleHog
-          trufflehog git_url https://github.com/saurav631/spring-petclinic/ --repo_path .
+      # - name: Install & Running TruffleHog
+      #   run: |
+      #     pip install truffleHog
+      #     trufflehog git_url https://github.com/saurav631/spring-petclinic/ --repo_path .
       
       - name: Install Syft
         run: |
@@ -98,7 +98,7 @@ jobs:
       - name: Generate SBOM attestation
         uses: actions/attest-sbom@v1
         with:
-          subject-path: ./app.jar
+          #subject-path: ./app.jar
           sbom-path: ./sbom.json
 
       - name: Upload SBOM
