@@ -94,11 +94,12 @@ jobs:
       - name: Generate SBOM with Syft
         run: |
           syft dir:. -o cyclonedx-json > sbom.json
+          ls
 
       - name: Generate SBOM attestation
         uses: actions/attest-sbom@v1
         with:
-          #subject-path: ./app.jar
+          subject-path: ./cyclonedx-json
           sbom-path: ./sbom.json
 
       - name: Upload SBOM
