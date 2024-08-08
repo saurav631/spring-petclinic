@@ -44,11 +44,14 @@ jobs:
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
+        # outputs: 
+        #   Attestation: 
         with:
           subject-path: ./app.jar
 
       - name: verify jar attesttion
-        run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json
+        #run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json
+        run: gh attestation verify app.jar --owner saurav631
         
       # - name: Set up JDK 17
       #   uses: actions/setup-java@v1
