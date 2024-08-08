@@ -50,6 +50,8 @@ jobs:
           subject-path: ./app.jar
 
       - name: verify jar attesttion
+        env:
+          GH_TOKEN: ${{secrets.GH_TOKEN}}
         #run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json
         run: gh attestation verify app.jar --owner saurav631
         
