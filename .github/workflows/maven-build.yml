@@ -53,7 +53,7 @@ jobs:
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         run: |
-          wget https://github.com/saurav631/spring-petclinic/attestations/1599265/download -o sigstore.json
+          wget https://github.com/saurav631/spring-petclinic/attestations/1598170/download -o sigstore.json
           gh attestation verify app.jar --owner saurav631 --bundle sigstore.json
         # run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json
         #run: gh attestation verify app.jar --owner saurav631
