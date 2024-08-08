@@ -54,11 +54,11 @@ jobs:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         run: |
           # gh attestation download app.jar -o github
-          wget https://github.com/saurav631/spring-petclinic/attestations/1598170/download -o sigstore.json
+          # wget https://github.com/saurav631/spring-petclinic/attestations/1598170/download -o sigstore.json
           # gh attestation verify github --owner saurav631 --bundle sigstore.json
           # gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json --format=json
-          # gh attestation verify app.jar --owner saurav631 --format=json
-          gh attestation verify sigstore.json --owner saurav631 --format=json
+          gh attestation verify app.jar --owner saurav631 --format=json
+          # gh attestation verify sigstore.json --owner saurav631 --format=json
         
       # - name: Set up JDK 17
       #   uses: actions/setup-java@v1
