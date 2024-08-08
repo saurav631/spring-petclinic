@@ -52,8 +52,9 @@ jobs:
       - name: verify jar attesttion
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
-        #run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json
-        run: gh attestation verify app.jar --owner saurav631
+        run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-.*.sigstore.json
+        # run: gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json
+        #run: gh attestation verify app.jar --owner saurav631
         
       # - name: Set up JDK 17
       #   uses: actions/setup-java@v1
