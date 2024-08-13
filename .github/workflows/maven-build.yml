@@ -130,27 +130,100 @@ jobs:
           gh attestation verify ./sbom.json --owner saurav631 --format=json
           # gh attestation verify app.jar --owner saurav631 --format=json
           # gh attestation verify sbom.json --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1599265.sigstore.json
+   
+      # - name: Dependency Scanning with OWASP Dependency-Check
+      #   run: |
+      #     /opt/dependency-check/bin/dependency-check.sh --project my_project --out dependency-check-report --scan .
 
-      - name: Dependency Scanning with OWASP Dependency-Check
-        run: |
-          /opt/dependency-check/bin/dependency-check.sh --project my_project --out dependency-check-report --scan .
+      # - name: Upload Dependency Check Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dependency-check-report
+      #     path: dependency-check-report
 
-      - name: Upload Dependency Check Report
-        uses: actions/upload-artifact@v3
+      # - name: Scan Docker Images for Vulnerabilities
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y docker.io
+      #     sudo systemctl start docker
+      #     sudo systemctl enable docker
+      #     curl -sSL https://github.com/aquasecurity/trivy/releases/download/v0.36.0/trivy_0.36.0_Linux-64bit.deb -o trivy.deb
+      #     sudo dpkg -i trivy.deb
+      #     trivy image my_microservice:latest
+
+      # - name: Deploy Microservices
+      #   run: |
+      #     kubectl apply -f k8s/deployment.yaml
+
+      - name: Build Docker Image
+        run: ./mvnw spring-boot:build-image
+        
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
         with:
-          name: dependency-check-report
-          path: dependency-check-report
+          username: ${{ secrets.CR_Username }}
+          password: ${{ secrets.CR_Password }}
+          registry: ghcr.io
 
-      - name: Scan Docker Images for Vulnerabilities
+      - name: Tag Docker Image
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo systemctl enable docker
-          curl -sSL https://github.com/aquasecurity/trivy/releases/download/v0.36.0/trivy_0.36.0_Linux-64bit.deb -o trivy.deb
-          sudo dpkg -i trivy.deb
-          trivy image my_microservice:latest
+          docker tag docker.io/library/spring-petclinic:3.3.0-SNAPSHOT ghcr.io/sachinmaniyar/spring-petclinic:latest
 
-      - name: Deploy Microservices
+      - name: Push Docker Image
         run: |
-          kubectl apply -f k8s/deployment.yaml
+          docker push ghcr.io/sachinmaniyar/spring-petclinic:latest
+
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: 'ghcr.io/sachinmaniyar/spring-petclinic:latest'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy Scan Results to GitHub Security Tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  sign:
+    name: Sign Container Image
+    runs-on: ubuntu-latest
+    needs: build_and_scan
+
+    steps:
+      - name: Check Out Source Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.CR_Username }}
+          password: ${{ secrets.CR_Password }}
+          registry: ghcr.io
+          
+      - name: Install Cosign CLI
+        run: |
+
+          curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.1.1/cosign-linux-amd64
+          chmod +x /usr/local/bin/cosign
+          cosign version
+          
+      - name: Create Decrypted Signing Key File
+        run: |
+          echo "${{ secrets.COSIGN_KEY }}" > cosign.key
+          
+      - name: Sign Docker Image with Cosign
+        run: |
+          cosign sign --key cosign.key ghcr.io/sachinmaniyar/spring-petclinic:latest
+          
+      - name: Create Public Key File_
+        run: echo "${{ secrets.COSIGN_KEY_PR }}" > cosign.pub
+        
+      - name: Verify Docker Image Signature
+        run: |
+          cosign verify --key cosign.pub ghcr.io/sachinmaniyar/spring-petclinic:latest
