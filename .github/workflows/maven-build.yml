@@ -228,7 +228,7 @@ jobs:
 
       - name: sign container image
         run: |
-            cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --upload=true
+            cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest #--upload=true
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
@@ -239,4 +239,7 @@ jobs:
         
       - name: Verify Docker Image Signature
         run: |
-          cosign verify --key ${{secrets.Cosign_Pub}} ghcr.io/saurav631/spring-petclinic:latest
+          cosign verify --key env://COSIGN_PUB ghcr.io/saurav631/spring-petclinic:latest
+        shell: bash
+        env:
+          COSIGN_PUB: ${{secrets.Cosign_Pub}}
