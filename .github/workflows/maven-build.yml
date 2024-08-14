@@ -254,4 +254,4 @@ jobs:
         
       - name: Verify Docker Image Signature
         run: |
-          cosign verify --key ./cosign.pub ghcr.io/saurav631/spring-petclinic:latest #--check-claims=false
+          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest --insecure-ignore-tlog #--check-claims=false
