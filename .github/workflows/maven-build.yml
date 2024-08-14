@@ -239,7 +239,11 @@ jobs:
 
       - name: Public Key Creation
         run: |
-          cosign public-key --key cosign.key > cosign.pub
+          cosign public-key --key env://COSIGN_KEY > cosign.pub
+        shell: bash
+        env:
+          COSIGN_KEY: ${{secrets.Cosign_Key}}
+          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
         
       - name: Verify Docker Image Signature
         run: |
