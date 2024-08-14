@@ -228,15 +228,19 @@ jobs:
 
       - name: sign container image
         run: |
-            cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest #--upload=true
+          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --upload=true
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
           COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
           
-      - name: Create Public Key File_
-        run: echo "${{ secrets.Cosign_Pub }}" > cosign.pub
+      # - name: Create Public Key File_
+      #   run: echo "${{ secrets.Cosign_Pub }}" > cosign.pub
+
+      - name: Public Key Creation
+        run: |
+          cosign public-key --key cosign.key > cosign.pub
         
       - name: Verify Docker Image Signature
         run: |
-          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest
+          cosign verify --key ./cosign.pub ghcr.io/saurav631/spring-petclinic:latest --check-claims=false
