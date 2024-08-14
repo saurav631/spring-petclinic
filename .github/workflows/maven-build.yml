@@ -235,7 +235,7 @@ jobs:
 
       - name: sign container image
         run: |
-          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --yes #--upload=true
+          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --yes
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
@@ -255,3 +255,42 @@ jobs:
       - name: Verify Docker Image Signature
         run: |
           cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest #--insecure-ignore-tlog #--check-claims=false
+
+      - name: Attach SBOM
+        id: attach-sbom
+        run: |
+          set -e  # Exit on error
+
+          # Run the cosign attach sbom command and capture its output
+          output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
+          # cosign attest --predicate <FILE> --type <TYPE> --key cosign.key <IMAGE>
+          # echo "$output"
+          
+          # Extract the SHA from the output
+          sbom_filename=$(echo "$output" | grep -oP 'sha256-[\w\d]+\.sbom') || { echo "Failed to extract SBOM filename"; exit 1; }
+
+          # Check if the extraction was successful
+          if [ -z "$sbom_filename" ]; then
+            echo "Error: No SBOM filename found in the output"
+            exit 1
+          fi
+
+          # Set the extracted SHA as an environment variable
+          echo "SBOM_FILENAME=$sbom_filename" >> $GITHUB_ENV
+
+      - name: Sign with SBOM
+        run: |
+          set -e  # Exit on error
+
+          # Use the environment variable to construct the command
+          if [ -z "$SBOM_FILENAME" ]; then
+            echo "Error: SBOM_FILENAME environment variable is not set"
+            exit 1
+          fi
+
+          echo "Signing SBOM with filename: $SBOM_FILENAME"
+          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:$SBOM_FILENAME --yes || { echo "Failed to sign with SBOM"; exit 1; }
+        shell: bash
+        env:
+          COSIGN_KEY: ${{secrets.Cosign_Key}}
+          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
