@@ -234,12 +234,9 @@ jobs:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
           COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
           
-      # - name: Create Public Key File_
-      #   run: echo "${{ secrets.COSIGN_KEY_PR }}" > cosign.pub
+      - name: Create Public Key File_
+        run: echo "${{ secrets.Cosign_Pub }}" > cosign.pub
         
       - name: Verify Docker Image Signature
         run: |
-          cosign verify --key env://COSIGN_PUB ghcr.io/saurav631/spring-petclinic:latest
-        shell: bash
-        env:
-          COSIGN_PUB: ${{secrets.Cosign_Pub}}
+          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest
