@@ -235,7 +235,7 @@ jobs:
 
       - name: sign container image
         run: |
-          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest #--upload=true
+          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --yes #--upload=true
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
