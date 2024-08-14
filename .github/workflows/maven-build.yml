@@ -211,10 +211,17 @@ jobs:
           password: ${{secrets.GH_TOKEN}}
           registry: ghcr.io
           
+      # - name: Install Cosign CLI
+      #   run: |
+
+      #     curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.1.1/cosign-linux-amd64
+      #     chmod +x /usr/local/bin/cosign
+      #     cosign version
+
       - name: Install Cosign CLI
         run: |
 
-          curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.1.1/cosign-linux-amd64
+          curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.2.3/cosign-linux-amd64
           chmod +x /usr/local/bin/cosign
           cosign version
           
@@ -228,7 +235,7 @@ jobs:
 
       - name: sign container image
         run: |
-          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --upload=true
+          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest #--upload=true
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
@@ -247,4 +254,4 @@ jobs:
         
       - name: Verify Docker Image Signature
         run: |
-          cosign verify --key ./cosign.pub ghcr.io/saurav631/spring-petclinic:latest --check-claims=false
+          cosign verify --key ./cosign.pub ghcr.io/saurav631/spring-petclinic:latest #--check-claims=false
