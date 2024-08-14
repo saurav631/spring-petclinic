@@ -218,17 +218,25 @@ jobs:
           chmod +x /usr/local/bin/cosign
           cosign version
           
-      - name: Create Decrypted Signing Key File
-        run: |
-          echo "${{ secrets.COSIGN_KEY }}" > cosign.key
+      # - name: Create Decrypted Signing Key File
+      #   run: |
+      #     echo "${{ secrets.COSIGN_KEY }}" > cosign.key
           
-      - name: Sign Docker Image with Cosign
+      # - name: Sign Docker Image with Cosign
+      #   run: |
+      #     cosign sign --key cosign.key ghcr.io/saurav631/spring-petclinic:latest
+
+      - name: sign container image
         run: |
-          cosign sign --key cosign.key ghcr.io/saurav631/spring-petclinic:latest
+            cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest
+        shell: bash
+        env:
+          COSIGN_KEY: ${{secrets.Cosign_Key}}
+          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
           
-      - name: Create Public Key File_
-        run: echo "${{ secrets.COSIGN_KEY_PR }}" > cosign.pub
+      # - name: Create Public Key File_
+      #   run: echo "${{ secrets.COSIGN_KEY_PR }}" > cosign.pub
         
-      - name: Verify Docker Image Signature
-        run: |
-          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest
+      # - name: Verify Docker Image Signature
+      #   run: |
+      #     cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest
