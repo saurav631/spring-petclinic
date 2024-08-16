@@ -272,11 +272,12 @@ jobs:
           # Run the cosign attach sbom command and capture its output
           # echo "sbom: ${{ needs.build.outputs.my_output }}"
           # output=$(cosign attach sbom --sbom ${{ needs.build.outputs.my_output }} ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
-          output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
-          echo $output
+          # output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
+          echo $(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) > output
           # output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
           # cosign attest --predicate <FILE> --type <TYPE> --key cosign.key <IMAGE>
-          echo "output: $output"
+          echo "cat output --> showing output below"
+          cat output
           
           # Extract the SHA from the output
           sbom_filename=$(echo "$output" | grep -oP 'sha256-[\w\d]+\.sbom') || { echo "Failed to extract SBOM filename"; exit 1; }
