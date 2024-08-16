@@ -23,6 +23,8 @@ jobs:
     strategy:
       matrix:
         java: [ '17' ]
+    outputs:
+      my_output: ${{ steps.sbom_attest.outputs.result }}
 
     steps:
       - uses: actions/checkout@v4
@@ -107,8 +109,9 @@ jobs:
           curl -sSL https://github.com/anchore/syft/releases/download/v0.66.0/syft_0.66.0_linux_amd64.tar.gz | tar xz -C /usr/local/bin syft
 
       - name: Generate SBOM with Syft
+        id: sbom_attest
         run: |
-          syft dir:. -o cyclonedx-json > sbom.json
+          echo "result=`syft dir:. -o cyclonedx-json > sbom.json`" >> $GITHUB_ENV
           ls
 
       - name: Generate SBOM attestation
@@ -262,7 +265,8 @@ jobs:
           set -e  # Exit on error
 
           # Run the cosign attach sbom command and capture its output
-          output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
+          output=$(cosign attach sbom --sbom ${{ needs.build.outputs.my_output }} ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
+          # output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
           # cosign attest --predicate <FILE> --type <TYPE> --key cosign.key <IMAGE>
           # echo "$output"
           
