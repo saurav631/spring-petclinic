@@ -321,5 +321,5 @@ jobs:
       - name: Verfiy the attested Image
         run: |
           set -e  # Exit on error
-          output=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
-          echo "$output"
+          output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
+          echo "output: $output1"
