@@ -312,7 +312,7 @@ jobs:
         run: |
           set -e  # Exit on error
           # output=$(cosign attest --key env://COSIGN_KEY --type cyclonedx --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest sbom with the image"; exit 1; }
-          output=$(cosign attest --key env://COSIGN_KEY --type cyclonedx --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest sbom with the image"; exit 1; }
+          output=$(cosign attest --key env://COSIGN_KEY --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest sbom with the image"; exit 1; }
           echo "$output"
         shell: bash
         env:
