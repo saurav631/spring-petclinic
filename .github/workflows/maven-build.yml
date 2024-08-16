@@ -288,7 +288,7 @@ jobs:
           # Set the extracted SHA as an environment variable
           echo "SBOM_FILENAME=$sbom_filename" >> $GITHUB_ENV
 
-      - name: Sign with SBOM
+      - name: Sign the SBOM attached with the Image
         run: |
           set -e  # Exit on error
           # Use the environment variable to construct the command
@@ -303,18 +303,23 @@ jobs:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
           COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
 
-      - name: Verify SBOM Sign
+      - name: Verify Sign of SBOM attached with the Image
         run: |
           set -e  # Exit on error
           cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:$SBOM_FILENAME || { echo "Failed to verify SBOM Sign"; exit 1; }
 
-      - name: Directly attest with SBOM
+      - name: Directly attest SBOM with the Image
         run: |
           set -e  # Exit on error
-          output=$(cosign attest --key env://COSIGN_KEY --type cyclonedx --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to run cosign attach sbom"; exit 1; }
+          output=$(cosign attest --key env://COSIGN_KEY --type cyclonedx --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to attest sbom with the image"; exit 1; }
+          echo "$output"
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
           COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
 
-      
+      - name: Verfiy the attested Image
+        run: |
+          set -e  # Exit on error
+          output=$(cosign verify-attestation ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to verify the attested image"; exit 1; }
+          echo "$output"
