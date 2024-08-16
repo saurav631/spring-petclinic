@@ -265,6 +265,7 @@ jobs:
           set -e  # Exit on error
 
           # Run the cosign attach sbom command and capture its output
+          echo "sbom: ${{ needs.build.outputs.my_output }}"
           output=$(cosign attach sbom --sbom ${{ needs.build.outputs.my_output }} ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
           # output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
           # cosign attest --predicate <FILE> --type <TYPE> --key cosign.key <IMAGE>
