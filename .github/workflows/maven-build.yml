@@ -437,4 +437,5 @@ jobs:
 
       - name: Verify Predicate Attestation
         run: |
-          $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
+          cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest
+          # $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
