@@ -325,3 +325,32 @@ jobs:
           # output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
           output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
           echo "output: $output1"
+
+      - name: Fetch commit details
+        run: |
+          # Get the commit ID
+          COMMIT_ID=$(git rev-parse HEAD)
+
+          # Get the branch name
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+          # Get the author name and email
+          AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
+          AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
+
+          # Get the pull request number from GitHub context if it's a PR
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          else
+            PR_NUMBER="Not applicable"
+          fi
+
+          # Get the GitHub repository URL
+          REPO_URL="https://github.com/${{ github.repository }}"
+
+          echo "Commit ID: $COMMIT_ID"
+          echo "Branch Name: $BRANCH_NAME"
+          echo "Author Name: $AUTHOR_NAME"
+          echo "Author Email: $AUTHOR_EMAIL"
+          echo "Pull Request Number: $PR_NUMBER"
+          echo "GitHub URL: $REPO_URL"
