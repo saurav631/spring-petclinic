@@ -348,9 +348,36 @@ jobs:
           # Get the GitHub repository URL
           REPO_URL="https://github.com/${{ github.repository }}"
 
-          echo "Commit ID: $COMMIT_ID"
-          echo "Branch Name: $BRANCH_NAME"
-          echo "Author Name: $AUTHOR_NAME"
-          echo "Author Email: $AUTHOR_EMAIL"
-          echo "Pull Request Number: $PR_NUMBER"
-          echo "GitHub URL: $REPO_URL"
+          # echo "Commit ID: $COMMIT_ID"
+          # echo "Branch Name: $BRANCH_NAME"
+          # echo "Author Name: $AUTHOR_NAME"
+          # echo "Author Email: $AUTHOR_EMAIL"
+          # echo "Pull Request Number: $PR_NUMBER"
+          # echo "GitHub URL: $REPO_URL"
+
+          # Create JSON output
+          OUTPUT=$(jq -n \
+            --arg commit_id "$COMMIT_ID" \
+            --arg author_name "$AUTHOR_NAME" \
+            --arg author_email "$AUTHOR_EMAIL" \
+            --arg branch "$BRANCH_NAME" \
+            --arg uri "$REPO_URL" \
+            '{
+              commit_id: $commit_id,
+              author_name: $author_name,
+              author_email: $author_email,
+              branch: $branch,
+              uri: $uri
+            }')
+
+          # Save JSON output to a file
+          echo "$OUTPUT" > output.json
+
+          # Print the contents of the JSON file
+          cat output.json
+
+      - name: Upload JSON file
+        uses: actions/upload-artifact@v3
+        with:
+          name: git-details
+          path: output.json
