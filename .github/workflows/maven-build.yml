@@ -384,12 +384,12 @@ jobs:
 
       - name: Attestation using Predicate
         run: |
-          # $(cosign attest --key env://COSIGN_KEY --predicate output.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest predicate with the image"; exit 1; }
+          # $(cosign attest --key env://COSIGN_KEY1 --predicate output.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest predicate with the image"; exit 1; }
           $(cat output.json | cosign attest --predicate - --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest predicate with the image"; exit 1; }
-        shell: bash
+        # shell: bash
         env:
-          COSIGN_KEY: ${{secrets.Cosign_Key}}
-          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+          COSIGN_KEY1: ${{secrets.Cosign_Key}}
+          # COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
 
       - name: Verify Predicate Attestation
         run: |
