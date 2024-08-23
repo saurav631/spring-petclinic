@@ -60,7 +60,7 @@ jobs:
           # wget https://github.com/saurav631/spring-petclinic/attestations/1598170/download -o sigstore.json
           # gh attestation verify github --owner saurav631 --bundle sigstore.json
           # gh attestation verify app.jar --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1598170.sigstore.json --format=json
-          gh attestation verify app.jar --owner saurav631 --format=json
+          gh attestation verify app.jar --owner saurav631 --format=json | jq .
           # gh attestation verify app.jar --owner saurv631 --bundle application/vnd.dev.sigstore.bundle.v0.3+json --format=json
           # gh attestation verify sigstore.json --owner saurav631 --format=json
         
@@ -131,7 +131,7 @@ jobs:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         run: |
           # gh attestation verify sbom.json --owner saurav631 --bundle ./sbom.json
-          gh attestation verify ./sbom.json --owner saurav631 --format=json
+          gh attestation verify ./sbom.json --owner saurav631 --format=json | jq .
           # gh attestation verify app.jar --owner saurav631 --format=json
           # gh attestation verify sbom.json --owner saurav631 --bundle ./saurav631-spring-petclinic-attestation-1599265.sigstore.json
    
@@ -228,7 +228,6 @@ jobs:
 
       - name: Install Cosign CLI
         run: |
-
           curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.2.3/cosign-linux-amd64
           chmod +x /usr/local/bin/cosign
           cosign version
@@ -262,7 +261,7 @@ jobs:
         
       - name: Verify Docker Image Signature
         run: |
-          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest #--insecure-ignore-tlog #--check-claims=false
+          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq . #--insecure-ignore-tlog #--check-claims=false
 
       - name: Attach SBOM
         id: attach-sbom
@@ -306,7 +305,7 @@ jobs:
       - name: Verify Sign of SBOM attached with the Image
         run: |
           set -e  # Exit on error
-          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:$SBOM_FILENAME || { echo "Failed to verify SBOM Sign"; exit 1; }
+          cosign verify --key cosign.pub ghcr.io/saurav631/spring-petclinic:$SBOM_FILENAME | jq . || { echo "Failed to verify SBOM Sign"; exit 1; }
 
       - name: Directly attest SBOM with the Image
         run: |
@@ -323,7 +322,7 @@ jobs:
         run: |
           set -e  # Exit on error
           # output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
-          output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
+          output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1 | jq .) || { echo "Failed to verify the attested image"; exit 1; }
           echo "output: $output1"
 
       - name: Fetch commit details
@@ -437,5 +436,5 @@ jobs:
 
       - name: Verify Predicate Attestation
         run: |
-          cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest
+          cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq .
           # $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
