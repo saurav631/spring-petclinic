@@ -440,5 +440,5 @@ jobs:
 
       - name: Verify Predicate Attestation
         run: |
-          cosign verify-attestation --certificate-github-workflow-name=.github/workflows/maven-build.yml@refs/heads/main --certificate-github-workflow-ref=refs/heads/main --certificate-github-workflow-repository=https://github.com/saurav631/spring-petclinic --certificate-github-workflow-trigger=workflow_dispatch --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D | jq .
+          cosign verify-attestation --certificate-github-workflow-name=.github/workflows/maven-build.yml@refs/heads/main --certificate-github-workflow-ref=refs/heads/main --certificate-github-workflow-repository=https://github.com/saurav631/spring-petclinic --certificate-github-workflow-trigger=workflow_dispatch --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 --decode | jq .
           # $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
