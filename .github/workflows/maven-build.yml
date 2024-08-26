@@ -322,7 +322,7 @@ jobs:
         run: |
           set -e  # Exit on error
           # output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
-          output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq . | base64 -D 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
+          output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
           echo "output: $output1"
 
       - name: Fetch commit details
@@ -436,5 +436,5 @@ jobs:
 
       - name: Verify Predicate Attestation
         run: |
-          cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D
+          cosign verify-attestation -a author_name=saurav631 -a branch=main -a author_email=saurav.d.kumar@pwc.com -a uri=https://github.com/saurav631/spring-petclinic --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq -r .payload | base64 -D
           # $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
