@@ -231,6 +231,10 @@ jobs:
           curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.2.3/cosign-linux-amd64
           chmod +x /usr/local/bin/cosign
           cosign version
+
+      - name: Cosign Help
+        run: |
+          cosign verify-attestation --help
           
       # - name: Create Decrypted Signing Key File
       #   run: |
@@ -436,5 +440,5 @@ jobs:
 
       - name: Verify Predicate Attestation
         run: |
-          cosign verify-attestation author_name=saurav631 branch=main author_email=saurav.d.kumar@pwc.com uri=https://github.com/saurav631/spring-petclinic --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq .
+          cosign verify-attestation --author_name='saurav631' --branch='main' --author_email='saurav.d.kumar@pwc.com' --uri='https://github.com/saurav631/spring-petclinic' --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq .
           # $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
