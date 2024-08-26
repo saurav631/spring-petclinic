@@ -436,5 +436,5 @@ jobs:
 
       - name: Verify Predicate Attestation
         run: |
-          cosign verify-attestation -a author_name=saurav631 branch=main author_email=saurav.d.kumar@pwc.com uri=https://github.com/saurav631/spring-petclinic --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq .
+          cosign verify-attestation author_name=saurav631 branch=main author_email=saurav.d.kumar@pwc.com uri=https://github.com/saurav631/spring-petclinic --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq .
           # $(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
