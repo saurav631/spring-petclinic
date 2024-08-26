@@ -9,3 +9,5 @@ jobs:
       contents: read
       actions: read
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_maven_slsa3.yml@v1.10.0
+    with:
+      rekor-log-public: true
