@@ -345,7 +345,14 @@ jobs:
 
       - name: upload SBOM to Github Registry
         run: |
-          cosign upload blob -f artifact ghcr.io/saurav631/demo/sbom.json
+          set -e  # Exit on error
+          output2 = (cosign upload blob -f sbom.json ghcr.io/saurav631/demo/sbom.json | jq . 2>&1) || { echo "Failed to upload the blob to the Registry"; exit 1; }
+          echo "output: $output2"
+
+      # - name: Download SBOM Digest Locally
+      #   run: |
+      #     set -e  # Exit on error
+      #     curl -L gcr.io/v2/user/demo/artifact/blobs
 
       - name: Fetch commit details
         run: |
