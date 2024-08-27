@@ -358,9 +358,9 @@ jobs:
       #     # set -e  # Exit on error
       #     curl -L ghcr.io/saurav631/demo/sbom.json/blobs/$SBOM_FILE
 
-      # - name: Sign SBOM
-      #   run: |
-      #     cosign sign --yes --key env://COSIGN_KEY ghcr.io/saurav631/demo/sbom.json/$SBOM_FILE
+      - name: Sign SBOM
+        run: |
+          cosign sign --yes --key env://COSIGN_KEY ghcr.io/saurav631/demo/sbom.json/$SBOM_FILE
 
       - name: Fetch commit details
         run: |
