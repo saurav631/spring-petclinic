@@ -360,7 +360,7 @@ jobs:
 
       - name: Verify SBOM Uploaded to Image Repo
         run: |
-          cosign verify-blob sbom.json --bundle cosign.bundle --certificate-github-workflow-name=.github/workflows/maven-build.yml@refs/heads/main --certificate-github-workflow-ref=refs/heads/main --certificate-github-workflow-repository=https://github.com/saurav631/spring-petclinic --certificate-github-workflow-trigger=workflow_dispatch --key cosign.pub ghcr.io/saurav631/spring-petclinic/$SBOM_FILE | jq -r .payload | base64 --decode | jq .
+          cosign verify-blob sbom.json --bundle cosign.bundle --certificate-github-workflow-name=.github/workflows/maven-build.yml@refs/heads/main --certificate-github-workflow-ref=refs/heads/main --certificate-github-workflow-repository=https://github.com/saurav631/spring-petclinic --certificate-github-workflow-trigger=workflow_dispatch --key cosign.pub 2>&1 #| jq -r .payload | base64 --decode | jq .
         # shell: bash
         # env:
         #   COSIGN_KEY: ${{secrets.Cosign_Key}}
