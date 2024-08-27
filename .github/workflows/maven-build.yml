@@ -360,7 +360,7 @@ jobs:
 
       - name: Sign SBOM
         run: |
-          cosign sign --yes --key env://COSIGN_KEY ghcr.io/saurav631/demo/sbom.json/$SBOM_FILE
+          cosign sign --yes --key env://COSIGN_KEY ghcr.io/saurav631/spring-petclinic/$SBOM_FILE
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
