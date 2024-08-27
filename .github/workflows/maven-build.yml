@@ -279,10 +279,10 @@ jobs:
           # output=$(cosign attach sbom --sbom sbom.json ghcr.io/saurav631/spring-petclinic:latest) || { echo "Failed to run cosign attach sbom"; exit 1; }
           # cosign attest --predicate <FILE> --type <TYPE> --key cosign.key <IMAGE>
           echo "cat output --> showing output below"
-          echo "$output"
+          echo "output: $output"
           # Extract the SHA from the output
           sbom_filename=$(echo "$output" | grep -oP 'sha256-[\w\d]+\.sbom') || { echo "Failed to extract SBOM filename"; exit 1; }
-          echo "$sbom_filename"
+          echo "sbom_filename: $sbom_filename"
           # Check if the extraction was successful
           if [ -z "$sbom_filename" ]; then
             echo "Error: No SBOM filename found in the output"
@@ -316,7 +316,7 @@ jobs:
           set -e  # Exit on error
           # output=$(cosign attest --key env://COSIGN_KEY --type cyclonedx --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest sbom with the image"; exit 1; }
           output=$(cosign attest --key env://COSIGN_KEY --predicate sbom.json ghcr.io/saurav631/spring-petclinic:latest --yes 2>&1) || { echo "Failed to attest sbom with the image"; exit 1; }
-          echo "$output"
+          echo "output: $output"
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
@@ -349,7 +349,7 @@ jobs:
           output2=$(cosign upload blob -f cosign.bundle ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
           echo "output: $output2"
           sbom_file=$(echo "$output2" | grep -oP 'sha256:[\w\d]+') || { echo "Failed to extract SBOM filename"; exit 1; }
-          echo "$sbom_file"
+          echo "sbom_file: $sbom_file"
           # Set the extracted SHA as an environment variable
           # echo "SBOM_FILE=$sbom_file" >> $GITHUB_ENV
 
