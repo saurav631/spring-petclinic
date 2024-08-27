@@ -349,8 +349,9 @@ jobs:
           output2=$(cosign upload blob -f cosign.bundle ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
           echo "output: $output2"
           sbom_file=$(echo "$output2" | grep -oP 'sha256:[\w\d]+') || { echo "Failed to extract SBOM filename"; exit 1; }
+          echo "$sbom_file"
           # Set the extracted SHA as an environment variable
-          echo "SBOM_FILE=$sbom_file" >> $GITHUB_ENV
+          # echo "SBOM_FILE=$sbom_file" >> $GITHUB_ENV
 
       # - name: Download SBOM Digest Locally
       #   run: |
