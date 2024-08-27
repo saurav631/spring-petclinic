@@ -332,7 +332,7 @@ jobs:
       - name: Sign SBOM
         run: |
           set -e  # Exit on error
-          (cosign sign-blob --key env://COSIGN_KEY sbom.json | jq -r .payload | base64 --decode | jq . 2>&1) || { echo "Failed to sign the blob"; exit 1; }
+          (cosign sign-blob --key env://COSIGN_KEY sbom.json --yes | jq -r .payload | base64 --decode | jq . 2>&1) || { echo "Failed to sign the blob"; exit 1; }
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
