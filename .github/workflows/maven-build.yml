@@ -329,24 +329,24 @@ jobs:
           output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
           echo "output: $output1"
 
-      # - name: Sign SBOM
-      #   run: |
-      #     # set -e  # Exit on error
-      #     cosign sign-blob --yes --key env://COSIGN_KEY sbom.json #| jq -r .payload | base64 --decode | jq . 2>&1 #|| { echo "Failed to sign the blob"; exit 1; }
-      #   shell: bash
-      #   env:
-      #     COSIGN_KEY: ${{secrets.Cosign_Key}}
-      #     COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+      - name: Sign SBOM
+        run: |
+          # set -e  # Exit on error
+          cosign sign-blob --yes --key env://COSIGN_KEY sbom.json 2>&1 #| jq -r .payload | base64 --decode | jq . 2>&1 #|| { echo "Failed to sign the blob"; exit 1; }
+        shell: bash
+        env:
+          COSIGN_KEY: ${{secrets.Cosign_Key}}
+          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
 
-      # - name: Push Signed SBOM to Registry
-      #   run: |
-      #     # set -e  # Exit on error
-      #     docker push ghcr.io/saurav631/sbom.json
+      - name: Push Signed SBOM to Registry
+        run: |
+          # set -e  # Exit on error
+          docker push ghcr.io/saurav631/sbom.json
 
       - name: upload SBOM to Github Registry
         run: |
           # set -e  # Exit on error
-          output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/demo/sbom.json 2>&1 | jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
+          output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/demo/sbom 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
           echo "output: $output2"
           sbom_file=$(echo "$output2" | grep -oP 'sha256-[\w\d]+') || { echo "Failed to extract SBOM filename"; exit 1; }
           # Set the extracted SHA as an environment variable
