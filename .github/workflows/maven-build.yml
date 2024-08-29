@@ -329,14 +329,14 @@ jobs:
           output1=$(cosign verify-attestation --key cosign.pub ghcr.io/saurav631/spring-petclinic:latest | jq . 2>&1) || { echo "Failed to verify the attested image"; exit 1; }
           echo "output: $output1"
 
-      - name: Sign SBOM
-        run: |
-          # set -e  # Exit on error
-          cosign sign-blob --yes --key env://COSIGN_KEY sbom.json --bundle cosign.bundle 2>&1 #| jq -r .payload | base64 --decode | jq . 2>&1 #|| { echo "Failed to sign the blob"; exit 1; }
-        shell: bash
-        env:
-          COSIGN_KEY: ${{secrets.Cosign_Key}}
-          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+      # - name: Sign SBOM
+      #   run: |
+      #     # set -e  # Exit on error
+      #     cosign sign-blob --yes --key env://COSIGN_KEY sbom.json --bundle cosign.bundle 2>&1 #| jq -r .payload | base64 --decode | jq . 2>&1 #|| { echo "Failed to sign the blob"; exit 1; }
+      #   shell: bash
+      #   env:
+      #     COSIGN_KEY: ${{secrets.Cosign_Key}}
+      #     COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
 
       # - name: Push Signed SBOM to Registry
       #   run: |
@@ -347,7 +347,8 @@ jobs:
         run: |
           # set -e  # Exit on error
           # output2=$(cosign upload blob -f cosign.bundle ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
-          output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
+          # output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
+          output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/sbom 2>&1) #| jq .)
           echo "output: $output2"
           sbom_file=$(echo "$output2" | grep -oP 'sha256:[\w\d]{64}' | head -n 1) || { echo "Failed to extract SBOM filename"; exit 1; }
           echo "sbom_file: $sbom_file"
