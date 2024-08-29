@@ -348,7 +348,7 @@ jobs:
           # set -e  # Exit on error
           # output2=$(cosign upload blob -f cosign.bundle ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
           # output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/spring-petclinic:latest 2>&1) #| jq .) #|| { echo "Failed to upload the blob to the Registry"; exit 1; }
-          output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/sbom 2>&1) #| jq .)
+          output2=$(cosign upload blob -f sbom.json ghcr.io/saurav631/sbom --yes 2>&1) #| jq .)
           echo "output: $output2"
           sbom_file=$(echo "$output2" | grep -oP 'sha256:[\w\d]{64}' | head -n 1) || { echo "Failed to extract SBOM filename"; exit 1; }
           echo "sbom_file: $sbom_file"
