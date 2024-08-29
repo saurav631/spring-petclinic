@@ -355,18 +355,26 @@ jobs:
           # Set the extracted SHA as an environment variable
           # echo "SBOM_FILE=$sbom_file" >> $GITHUB_ENV
 
+      - name: Sign the SBOM file using github url
+        run: |
+          cosign sign --key cosign.key ghcr.io/saurav631/sbom
+        shell: bash
+        env:
+          COSIGN_KEY: ${{secrets.Cosign_Key}}
+          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+
       # - name: Download SBOM Digest Locally
       #   run: |
       #     # set -e  # Exit on error
       #     curl -L ghcr.io/saurav631/demo/sbom.json/blobs/$SBOM_FILE
 
-      - name: Verify SBOM Uploaded to Image Repo
-        run: |
-          cosign verify-blob sbom.json --bundle cosign.bundle --certificate-github-workflow-name=.github/workflows/maven-build.yml@refs/heads/main --certificate-github-workflow-ref=refs/heads/main --certificate-github-workflow-repository=https://github.com/saurav631/spring-petclinic --certificate-github-workflow-trigger=workflow_dispatch --key cosign.pub 2>&1 #| jq -r .payload | base64 --decode | jq .
-        # shell: bash
-        # env:
-        #   COSIGN_KEY: ${{secrets.Cosign_Key}}
-        #   COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+      # - name: Verify SBOM Uploaded to Image Repo
+      #   run: |
+      #     cosign verify-blob sbom.json --bundle cosign.bundle --certificate-github-workflow-name=.github/workflows/maven-build.yml@refs/heads/main --certificate-github-workflow-ref=refs/heads/main --certificate-github-workflow-repository=https://github.com/saurav631/spring-petclinic --certificate-github-workflow-trigger=workflow_dispatch --key cosign.pub 2>&1 #| jq -r .payload | base64 --decode | jq .
+      #   # shell: bash
+      #   # env:
+      #   #   COSIGN_KEY: ${{secrets.Cosign_Key}}
+      #   #   COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
 
       - name: Fetch commit details
         run: |
