@@ -361,7 +361,11 @@ jobs:
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
-          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+          COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}} 
+ 
+      - name: Verify the signature of the SBOM file
+        run: |
+          cosign verify --key cosign.pub ghcr.io/saurav631/sbom
 
       # - name: Download SBOM Digest Locally
       #   run: |
