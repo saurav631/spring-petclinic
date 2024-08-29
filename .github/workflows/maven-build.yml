@@ -357,7 +357,7 @@ jobs:
 
       - name: Sign the SBOM file using github url
         run: |
-          cosign sign --key cosign.key ghcr.io/saurav631/sbom
+          cosign sign --key env://COSIGN_KEY ghcr.io/saurav631/sbom
         shell: bash
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
