@@ -520,8 +520,12 @@ jobs:
               package signature
 
               allow {
-              input.author_name == "saurav631"
-              sprintf("Valid Git Author: %v", [input.Data.author_name])
+                input.author_name == "saurav631"
+                sprintf("Valid Git Author: %v", [input.Data.author_name])
+                response :={
+                 "result" : result,
+                 "error" : errorMsg,
+                }
               }
 
       - name: Read Rego Policy
