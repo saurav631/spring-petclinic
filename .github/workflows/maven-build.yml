@@ -44,6 +44,22 @@ jobs:
           RESULT=$(date +"%d.%m.%Y").$BRANCH_NAME.$GITHUB_RUN_NUMBER
           echo $RESULT
           ./mvnw -B package > app.jar
+
+      - name: Rego Policy
+        run: |
+        echo "package signature
+ 
+              allow[msg] {
+              input.Data.author_name != "saurav631"
+              msg := sprintf("Invalid Git Author: %v", [input.Data])
+              }
+ 
+              allow[msg] {
+              input.Data.branch != "main"
+              msg := sprintf("Invalid branch name: %v", [input.Data])
+              }" > policy.rego
+
+        cat policy.rego
         
       # - uses: actions/checkout@v4
       #   with:
