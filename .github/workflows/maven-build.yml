@@ -528,7 +528,6 @@ jobs:
               input.Data.branch != "main"
               msg := sprintf("Invalid branch name: %v", [input.Data])
               }
-              EOF
 
       - name: Read Rego Policy
         run: |
