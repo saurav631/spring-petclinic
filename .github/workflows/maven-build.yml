@@ -61,7 +61,7 @@ jobs:
               }
               EOF
 
-        cat policy.rego
+          cat policy.rego
         
       # - uses: actions/checkout@v4
       #   with:
