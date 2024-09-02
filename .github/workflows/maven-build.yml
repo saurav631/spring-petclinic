@@ -527,6 +527,7 @@ jobs:
       - name: Read Rego Policy
         run: |
           cat policy.rego
+          echo $input
 
       - name: Verify Predicate Attestation
         run: |
