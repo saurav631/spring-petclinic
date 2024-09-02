@@ -519,15 +519,15 @@ jobs:
           cat <<EOF > policy.rego
               package signature
 
-              allow[] {
-              input.Data.author_name != "saurav631"
-              sprintf("Invalid Git Author: %v", [input.Data.author_name])
+              allow {
+              input.author_name == "saurav631"
+              sprintf("Valid Git Author: %v", [input.Data.author_name])
               }
 
       - name: Read Rego Policy
         run: |
           cat policy.rego
-          echo $input
+          echo "input: $input"
 
       - name: Verify Predicate Attestation
         run: |
