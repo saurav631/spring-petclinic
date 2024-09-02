@@ -40,7 +40,9 @@ jobs:
         run: |
           pwd
           BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-          echo "$(date +"%d.%m.%Y").$BRANCH_NAME.$GITHUB_RUN_NUMBER"
+          # echo "$(date +"%d.%m.%Y").$BRANCH_NAME.$GITHUB_RUN_NUMBER"
+          RESULT=$(date +"%d.%m.%Y").$BRANCH_NAME.$GITHUB_RUN_NUMBER
+          echo $RESULT
           ./mvnw -B package > app.jar
         
       # - uses: actions/checkout@v4
