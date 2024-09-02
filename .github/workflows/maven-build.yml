@@ -47,7 +47,7 @@ jobs:
 
       - name: Rego Policy
         run: |
-          cat <<EOF > filename.txt
+          cat <<EOF > policy.rego
               package signature
 
               allow[msg] {
