@@ -45,29 +45,29 @@ jobs:
           echo $RESULT
           ./mvnw -B package > app.jar
 
-      - name: Rego Policy
-        run: |
-          cat <<EOF > policy.rego
-              package signature
+      # - name: Rego Policy
+      #   run: |
+      #     cat <<EOF > policy.rego
+      #         package signature
 
-              allow[msg] {
-              input.Data.author_name != "saurav631"
-              msg := sprintf("Invalid Git Author: %v", [input.Data])
-              }
+      #         allow[msg] {
+      #         input.Data.author_name != "saurav631"
+      #         msg := sprintf("Invalid Git Author: %v", [input.Data])
+      #         }
 
-              allow[msg] {
-              input.Data.branch != "main"
-              msg := sprintf("Invalid branch name: %v", [input.Data])
-              }
-              EOF
+      #         allow[msg] {
+      #         input.Data.branch != "main"
+      #         msg := sprintf("Invalid branch name: %v", [input.Data])
+      #         }
+      #         EOF
         
-      # - uses: actions/checkout@v4
-      #   with:
-      #     fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # # - uses: actions/checkout@v4
+      # #   with:
+      # #     fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Read Rego Policy
-        run: |
-          cat policy.rego
+      # - name: Read Rego Policy
+      #   run: |
+      #     cat policy.rego
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
@@ -513,6 +513,26 @@ jobs:
         env:
           COSIGN_KEY: ${{secrets.Cosign_Key}}
           COSIGN_PASSWORD: ${{secrets.Cosign_Key_Password}}
+
+      - name: Rego Policy
+        run: |
+          cat <<EOF > policy.rego
+              package signature
+
+              allow[msg] {
+              input.Data.author_name != "saurav631"
+              msg := sprintf("Invalid Git Author: %v", [input.Data])
+              }
+
+              allow[msg] {
+              input.Data.branch != "main"
+              msg := sprintf("Invalid branch name: %v", [input.Data])
+              }
+              EOF
+
+      - name: Read Rego Policy
+        run: |
+          cat policy.rego
 
       - name: Verify Predicate Attestation
         run: |
