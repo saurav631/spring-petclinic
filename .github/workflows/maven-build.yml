@@ -519,9 +519,9 @@ jobs:
           cat <<EOF > policy.rego
               package signature
 
-              allow[msg] {
+              allow[] {
               input.Data.author_name != "saurav631"
-              msg := sprintf("Invalid Git Author: %v", [input.Data.author_name])
+              sprintf("Invalid Git Author: %v", [input.Data.author_name])
               }
 
       - name: Read Rego Policy
