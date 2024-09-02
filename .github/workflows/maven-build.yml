@@ -521,12 +521,12 @@ jobs:
 
               allow[msg] {
               input.Data.author_name != "saurav631"
-              msg := sprintf("Invalid Git Author: %v", [input.Data])
+              msg := sprintf("Invalid Git Author: %v", [input.Data.author_name])
               }
 
               allow[msg] {
               input.Data.branch != "main"
-              msg := sprintf("Invalid branch name: %v", [input.Data])
+              msg := sprintf("Invalid branch name: %v", [input.Data.branch])
               }
 
       - name: Read Rego Policy
