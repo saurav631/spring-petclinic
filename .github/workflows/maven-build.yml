@@ -52,7 +52,8 @@ jobs:
       # Step 2: Verify Container SHA256 ID        
       - name: Verify Container SHA256 ID        
         run: |          
-          EXPECTED_SHA256="${{ secrets.EXPECTED_SHA256 }}"
+          # EXPECTED_SHA256="${{ secrets.EXPECTED_SHA256 }}"
+          EXPECTED_SHA256="672175e97bd582bc0aab64d2b9444acd14a8352d920dfb00bd00d6704cf13d49"
           ACTUAL_SHA256="${{ env.CONTAINER_SHA256 }}"
           
           if [ "$EXPECTED_SHA256" != "$ACTUAL_SHA256" ]; then
