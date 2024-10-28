@@ -20,8 +20,8 @@ jobs:
       attestations: write
       packages: write
     runs-on: ubuntu-latest
-      container:
-        image: dheeman29/new_image:v1
+    container:
+      image: dheeman29/new_image:v1
     strategy:
       matrix:
         java: [ '17' ]
