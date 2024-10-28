@@ -38,9 +38,9 @@ jobs:
           distribution: 'adopt'
           cache: maven
           
-          #Step 1: Capture SHA256 ID of the Image
-     - name: Capture SHA256 ID of the Image
-       run: |          
+      #Step 1: Capture SHA256 ID of the Image
+      - name: Capture SHA256 ID of the Image
+        run: |          
           REPO_DIGESTS=$(docker inspect --format='{{.RepoDigests}}' dheeman29/new_image:v1 ) 
           if [ "$REPO_DIGESTS" == "[]" ]; then
               echo "Error: RepoDigests is empty. Cannot retrieve SHA256."
@@ -50,8 +50,8 @@ jobs:
           echo "CONTAINER_SHA256=$CONTAINER_SHA256" >> $GITHUB_ENV
 
       # Step 2: Verify Container SHA256 ID        
-     - name: Verify Container SHA256 ID        
-       run: |          
+      - name: Verify Container SHA256 ID        
+        run: |          
           EXPECTED_SHA256="${{ secrets.EXPECTED_SHA256 }}"
           ACTUAL_SHA256="${{ env.CONTAINER_SHA256 }}"
           
